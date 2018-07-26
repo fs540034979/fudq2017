@@ -1,0 +1,217 @@
+网上的关于搭建Go环境的文档大多含糊难懂，十分不友好，这篇文章主要清晰的讲述一下该如何搭建Go语言环境，创建一个小的工程，并成功编译出可执行的.exe 文件。
+1.环境的创建
+
+首先你需要下载golang的源码，我已经下好，请移步\\share\everyone\fudq\go（只下载了windows64位的），当然你也可以自己去下载更多的资源文件，路径是：下载源码
+
+下面以我下载的 go1.10.3.windows-amd64.zip 文件为例，进行讲解。
+
+首先解压文件，把解压出来的 go 目录，放到 D盘，或者你随便选一个盘。
+
+然后去设置环境变量，如下图：
+
+[P22 > 如何搭建GO语言环境 > image2018-7-13_14-46-44.png]
+
+[P22 > 如何搭建GO语言环境 > image2018-7-13_14-47-39.png]
+
+设置完这三个变量之后，保存好。
+
+上图中，我的Go文件是我改成了大写，你也可以保持小写，GoWorks文件夹是自己创建的，里面有三个文件夹：
+
+    src 存放源代码（比如：.go .c .h .s等）
+    pkg 编译后生成的文件（比如：.a）
+    bin 编译后生成的可执行文件
+
+然后，环境基本就搭建好了下面进行第一个小工程的创建
+2.实验一个小程序
+
+我用的代码编写工具是sublineText，将整个gopath的目录拖到里面即可，如下图：
+
+[P22 > 如何搭建GO语言环境 > image2018-7-13_14-52-56.png]
+
+在控制台执行下面的命令：
+
+    cd $GOPATH/src
+    mkdir mymath
+
+新建一个sqrt.go的文件，怎么新建？当你创建了 mymath文件之后，在sublinetext 的目录就有了个文件夹，直接右键mymath文件夹，然后创建文件，然后命名即可，记得ctrl+s保存后把名字删掉
+
+然后就有了sqrt.go 这个go代码文件
+
+    package mymath
+
+    func Sqrt(x float64) float64 {
+
+        z := 0.0
+
+        for i := 0; i < 1000; i++ {
+
+            z -= (z*z - x) / (2 * x)
+
+        }
+
+        return z
+
+    }
+
+复制这几行代码进去，在任意的目录执行如下代码 go install mymath，如下图：
+
+[P22 > 如何搭建GO语言环境 > image2018-7-13_15-2-37.png]
+
+你会看到在pkg文件夹里出现了一个windows_amd64文件夹，里面装着 mymath.a 编译好的文件：
+
+[P22 > 如何搭建GO语言环境 > image2018-7-13_15-0-42.png]
+
+那么这个.a  文件我们该怎么使用？
+
+接下来我们新建一个应用程序来调用这个应用包
+
+新建应用包mathapp，在控制台执行如下指令：
+
+    cd $GOPATH/src
+    mkdir mathapp
+    cd mathapp
+
+然后创建main.go 文件，像上面创建那个文件一样，然后复制下面代码进去：
+
+    package main
+
+    import (
+
+        "mymath"
+
+        "fmt"
+
+    )
+
+    func main() {
+
+        fmt.Printf("Hello, world.  Sqrt(2) = %v\n", mymath.Sqrt(2))
+
+    }
+
+可以看到这个的package是main，import里面调用的包是mymath,这个就是相对于$GOPATH/src的路径，如果是多级目录，就在import里面引入多级目录，如果你有多个GOPATH，也是一样，Go会自动在多个$GOPATH/src中寻找。
+
+如何编译程序呢？进入该应用目录，然后执行go build，那么在该目录下面会生成一个mathapp的可执行文件。
+
+输出如下内容
+
+    Hello, world.  Sqrt(2) = 1.414213562373095
+
+好了，这个小程序我们就完成了。
+
+那为什么 .exe 文件为什么不在 我们创建的bin文件夹里呢？
+
+控制台执行   go install；
+
+    如果是普通包，就像我们在编写的mymath包那样，当你执行go build之后，它不会产生任何文件。如果你需要在$GOPATH/pkg下生成相应的文件，那就得执行go install。
+
+    如果是main包，当你执行go build之后，它就会在当前目录下生成一个可执行文件。如果你需要在$GOPATH/bin下生成相应的文件，需要执行go install，或者使用go build -o 路径/a.exe。
+
+
+新手学习的 http://docs.studygolang.com/doc/
+
+网上的关于搭建Go环境的文档大多含糊难懂，十分不友好，这篇文章主要清晰的讲述一下该如何搭建Go语言环境，创建一个小的工程，并成功编译出可执行的.exe 文件。
+1.环境的创建
+
+首先你需要下载golang的源码，我已经下好，请移步\\share\everyone\fudq\go（只下载了windows64位的），当然你也可以自己去下载更多的资源文件，路径是：下载源码
+
+下面以我下载的 go1.10.3.windows-amd64.zip 文件为例，进行讲解。
+
+首先解压文件，把解压出来的 go 目录，放到 D盘，或者你随便选一个盘。
+
+然后去设置环境变量，如下图：
+
+设置完这三个变量之后，保存好。
+
+上图中，我的Go文件是我改成了大写，你也可以保持小写，GoWorks文件夹是自己创建的，里面有三个文件夹：
+
+    src 存放源代码（比如：.go .c .h .s等）
+    pkg 编译后生成的文件（比如：.a）
+    bin 编译后生成的可执行文件
+
+然后，环境基本就搭建好了下面进行第一个小工程的创建
+2.实验一个小程序
+
+我用的代码编写工具是sublineText，将整个gopath的目录拖到里面即可，如下图：
+
+在控制台执行下面的命令：
+
+    cd $GOPATH/src
+    mkdir mymath
+
+新建一个sqrt.go的文件，怎么新建？当你创建了 mymath文件之后，在sublinetext 的目录就有了个文件夹，直接右键mymath文件夹，然后创建文件，然后命名即可，记得ctrl+s保存后把名字删掉
+
+然后就有了sqrt.go 这个go代码文件
+
+    package mymath
+
+    func Sqrt(x float64) float64 {
+
+        z := 0.0
+
+        for i := 0; i < 1000; i++ {
+
+            z -= (z*z - x) / (2 * x)
+
+        }
+
+        return z
+
+    }
+
+复制这几行代码进去，在任意的目录执行如下代码 go install mymath，如下图：
+
+你会看到在pkg文件夹里出现了一个windows_amd64文件夹，里面装着 mymath.a 编译好的文件：
+
+那么这个.a  文件我们该怎么使用？
+
+接下来我们新建一个应用程序来调用这个应用包
+
+新建应用包mathapp，在控制台执行如下指令：
+
+    cd $GOPATH/src
+    mkdir mathapp
+    cd mathapp
+
+然后创建main.go 文件，像上面创建那个文件一样，然后复制下面代码进去：
+
+    package main
+
+    import (
+
+        "mymath"
+
+        "fmt"
+
+    )
+
+    func main() {
+
+        fmt.Printf("Hello, world.  Sqrt(2) = %v\n", mymath.Sqrt(2))
+
+    }
+
+可以看到这个的package是main，import里面调用的包是mymath,这个就是相对于$GOPATH/src的路径，如果是多级目录，就在import里面引入多级目录，如果你有多个GOPATH，也是一样，Go会自动在多个$GOPATH/src中寻找。
+
+如何编译程序呢？进入该应用目录，然后执行go build，那么在该目录下面会生成一个mathapp的可执行文件。
+
+输出如下内容
+
+    Hello, world.  Sqrt(2) = 1.414213562373095
+
+好了，这个小程序我们就完成了。
+
+那为什么 .exe 文件为什么不在 我们创建的bin文件夹里呢？
+
+控制台执行   go install；
+
+    如果是普通包，就像我们在编写的mymath包那样，当你执行go build之后，它不会产生任何文件。如果你需要在$GOPATH/pkg下生成相应的文件，那就得执行go install。
+
+    如果是main包，当你执行go build之后，它就会在当前目录下生成一个可执行文件。如果你需要在$GOPATH/bin下生成相应的文件，需要执行go install，或者使用go build -o 路径/a.exe。
+
+
+新手学习的 http://docs.studygolang.com/doc/
+
+
+
+
